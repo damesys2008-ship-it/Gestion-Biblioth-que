@@ -1,4 +1,4 @@
-package com.formation.bibliotheque;
+package com.formation.bibliotheque.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
