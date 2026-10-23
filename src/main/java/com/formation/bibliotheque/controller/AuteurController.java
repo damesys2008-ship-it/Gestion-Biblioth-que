@@ -2,8 +2,11 @@ package com.formation.bibliotheque.controller;
 
 import com.formation.bibliotheque.dto.AuteurRequest;
 import com.formation.bibliotheque.dto.AuteurResponse;
+import com.formation.bibliotheque.dto.LivreResponse;
 import com.formation.bibliotheque.mapper.AuteurMapper;
+import com.formation.bibliotheque.mapper.LivreMapper;
 import com.formation.bibliotheque.model.Auteur;
+import com.formation.bibliotheque.model.Livre;
 import com.formation.bibliotheque.service.AuteurService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -76,5 +79,17 @@ public class AuteurController {
         }
         auteurService.supprimer(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}/livres")
+    public ResponseEntity<PagedModel<LivreResponse>> listerLivres(
+            @PathVariable Long id,
+            @PageableDefault(size = 10, sort = "titre") Pageable pageable) {
+        if (!auteurService.existe(id)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Page<Livre> page = auteurService.recupererLivres(id, pageable);
+        return ResponseEntity.ok(LivreMapper.versPage(page));
     }
 }

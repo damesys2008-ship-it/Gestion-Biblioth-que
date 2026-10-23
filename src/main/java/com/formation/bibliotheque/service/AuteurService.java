@@ -1,6 +1,7 @@
 package com.formation.bibliotheque.service;
 
 import com.formation.bibliotheque.model.Auteur;
+import com.formation.bibliotheque.model.Livre;
 import com.formation.bibliotheque.repository.AuteurRepository;
 import com.formation.bibliotheque.repository.LivreRepository;
 import org.springframework.data.domain.Page;
@@ -46,6 +47,10 @@ public class AuteurService {
 
     public boolean aDesLivres(Long id) {
         return livreRepository.existsByAuteurId(id);
+    }
+
+    public Page<Livre> recupererLivres(Long id, Pageable pageable) {
+        return livreRepository.findByAuteurId(id, pageable);
     }
 
     public void supprimer(Long id) {

@@ -602,7 +602,7 @@
                   "    pm.response.to.have.status(200);",
                   "});",
                   "pm.test('Book 1 is Les Miserables', function () {",
-                  "    pm.expect(pm.response.json().titre).to.eql('Les Mis?rables');",
+                  "    pm.expect(pm.response.json().titre).to.eql('Les Mis\\u00e9rables');",
                   "});"
                 ]
               }
