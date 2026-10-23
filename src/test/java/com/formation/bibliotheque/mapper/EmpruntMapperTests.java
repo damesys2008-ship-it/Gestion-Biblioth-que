@@ -9,8 +9,10 @@ import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/** Vérifie les conversions entre DTOs et entités, y compris le calcul du retard. */
 class EmpruntMapperTests {
 
+    /** Les dates et l'état de retour doivent rester à null dans le mapper de requête. */
     @Test
     void mapsRequestWithoutServiceManagedFields() {
         EmpruntRequest request = new EmpruntRequest();
@@ -30,6 +32,7 @@ class EmpruntMapperTests {
         assertThat(emprunt.getRendu()).isNull();
     }
 
+    /** Seul un emprunt non rendu dont la date limite est passée est en retard. */
     @Test
     void marksOnlyUnreturnedPastDueLoansAsLate() {
         Emprunt overdueEmprunt = new Emprunt();

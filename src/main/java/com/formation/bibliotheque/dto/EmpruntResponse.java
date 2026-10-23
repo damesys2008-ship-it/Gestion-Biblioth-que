@@ -44,12 +44,20 @@ public class EmpruntResponse {
         this.enRetard = enRetard;
     }
 
+    /** Retourne l'identifiant de l'emprunt. */
     public Long getId() { return id; }
+    /** Retourne l'identifiant du livre concerné. */
     public Long getLivreId() { return livreId; }
+    /** Retourne le nom de l'emprunteur. */
     public String getEmprunteur() { return emprunteur; }
+    /** Retourne la date à laquelle l'emprunt a commencé. */
     public LocalDate getDateEmprunt() { return dateEmprunt; }
+    /** Retourne la date prévue pour le retour du livre. */
     public LocalDate getDateRetourPrevue() { return dateRetourPrevue; }
+    /** Retourne la date effective du retour, ou null si le prêt est en cours. */
     public LocalDate getDateRetourEffective() { return dateRetourEffective; }
+    /** Indique si le livre a été rendu. */
     public Boolean getRendu() { return rendu; }
+    /** Indique si l'emprunt non rendu a dépassé sa date limite. */
     public Boolean getEnRetard() { return enRetard; }
 }

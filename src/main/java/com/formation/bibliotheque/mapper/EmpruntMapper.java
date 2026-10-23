@@ -17,6 +17,7 @@ import java.util.List;
  */
 public final class EmpruntMapper {
 
+    /** Constructeur privé : les conversions sont toutes des méthodes statiques. */
     private EmpruntMapper() {
     }
 
@@ -57,6 +58,7 @@ public final class EmpruntMapper {
      */
     public static List<EmpruntResponse> versResponses(List<Emprunt> emprunts) {
         List<EmpruntResponse> responses = new ArrayList<>();
+        // Convertit les éléments un par un en réutilisant la conversion unitaire.
         for (Emprunt emprunt : emprunts) {
             responses.add(versResponse(emprunt));
         }
@@ -68,6 +70,7 @@ public final class EmpruntMapper {
      */
     public static PagedModel<EmpruntResponse> versPage(Page<Emprunt> page) {
         List<EmpruntResponse> contenu = versResponses(page.getContent());
+        // Recrée la page avec les mêmes informations de pagination que la page source.
         Page<EmpruntResponse> pageDto =
                 new PageImpl<>(contenu, page.getPageable(), page.getTotalElements());
         return new PagedModel<>(pageDto);

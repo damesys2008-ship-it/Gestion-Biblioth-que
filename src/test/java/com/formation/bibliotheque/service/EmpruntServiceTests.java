@@ -14,15 +14,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+/** Vérifie l'application par le service des règles métier de création et de retour. */
 @ExtendWith(MockitoExtension.class)
 class EmpruntServiceTests {
 
+    /** Remplace le repository réel pour vérifier les appels de persistance. */
     @Mock
     private EmpruntRepository empruntRepository;
 
+    /** Injecte le faux repository dans le service testé. */
     @InjectMocks
     private EmpruntService empruntService;
 
+    /** Le service initialise les dates et l'état avant de sauvegarder un emprunt. */
     @Test
     void createsLoanWithServiceManagedDatesAndStatus() {
         Emprunt emprunt = new Emprunt();
@@ -41,6 +45,7 @@ class EmpruntServiceTests {
         verify(empruntRepository).save(emprunt);
     }
 
+    /** Le retour marque l'emprunt rendu et renseigne la date effective. */
     @Test
     void returningLoanSetsReturnDateAndStatus() {
         Emprunt emprunt = new Emprunt();

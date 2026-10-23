@@ -8,6 +8,7 @@
   "item": [
     {
       "name": "Emprunts et fin du scénario (partiel)",
+      "description": "Sous-ensemble de Q32 : requêtes conservées pour tester la validation, la création, la consultation, les filtres et le retour des emprunts. Les références de livres sont des identifiants simples sur cette branche ; les scénarios nécessitant les endpoints et le stock des livres seront ajoutés après intégration du travail correspondant.",
       "item": [
         {
           "name": "R31 — POST /emprunts → 400",

@@ -35,8 +35,10 @@ import java.util.Optional;
 @Tag(name = "Emprunts", description = "Emprunts et retours des livres")
 public class EmpruntController {
 
+    /** Service qui applique les règles métier des emprunts. */
     private final EmpruntService empruntService;
 
+    /** Injecte le service utilisé par les endpoints HTTP. */
     public EmpruntController(EmpruntService empruntService) {
         this.empruntService = empruntService;
     }

@@ -25,14 +25,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
+/** Vérifie les réponses HTTP des endpoints d'emprunt sans démarrer tout Spring Boot. */
 @ExtendWith(MockitoExtension.class)
 class EmpruntControllerTests {
 
+    /** Faux service permettant de contrôler les résultats vus par le contrôleur. */
     @Mock
     private EmpruntService empruntService;
 
+    /** Client MVC de test configuré pour résoudre les paramètres de pagination. */
     private MockMvc mockMvc;
 
+    /** Prépare le contrôleur isolé et son résolveur de Pageable. */
     @BeforeEach
     void setUp() {
         mockMvc = standaloneSetup(new EmpruntController(empruntService))
@@ -40,6 +44,7 @@ class EmpruntControllerTests {
                 .build();
     }
 
+    /** Les listes répondent 200 et la lecture d'un identifiant inconnu répond 404. */
     @Test
     void listsLoansAndReturnsNotFoundForUnknownId() throws Exception {
         when(empruntService.recupererTous(any())).thenReturn(new PageImpl<>(List.of()));
@@ -63,6 +68,7 @@ class EmpruntControllerTests {
                 .andExpect(jsonPath("$.content.length()").value(0));
     }
 
+    /** Une requête valide est créée ; les champs requis et le format email sont validés. */
     @Test
     void createsLoanAndValidatesTheRequest() throws Exception {
         when(empruntService.creer(any(Emprunt.class))).thenAnswer(invocation -> {
@@ -111,6 +117,7 @@ class EmpruntControllerTests {
                 .andExpect(status().isBadRequest());
     }
 
+    /** Un retour réussi ne peut pas être répété et un identifiant inconnu répond 404. */
     @Test
     void returnsLoanOnlyOnceAndReportsUnknownLoan() throws Exception {
         Emprunt emprunt = new Emprunt();

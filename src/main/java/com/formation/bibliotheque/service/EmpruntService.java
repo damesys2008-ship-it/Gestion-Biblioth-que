@@ -21,8 +21,10 @@ public class EmpruntService {
     /** Durée maximale d'un emprunt, en jours (RM5). */
     public static final int DUREE_MAX_JOURS = 14;
 
+    /** Repository responsable de la persistance des emprunts. */
     private final EmpruntRepository empruntRepository;
 
+    /** Injecte le repository utilisé par les opérations métier. */
     public EmpruntService(EmpruntRepository empruntRepository) {
         this.empruntRepository = empruntRepository;
     }
