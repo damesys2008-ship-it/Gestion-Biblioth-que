@@ -117,6 +117,36 @@ class EmpruntControllerTests {
                 .andExpect(status().isBadRequest());
     }
 
+    /** Les erreurs métier de création deviennent les codes HTTP prévus par l'API. */
+    @Test
+    void mapsUnknownAndUnavailableBooksToClientErrors() throws Exception {
+        when(empruntService.creer(any(Emprunt.class)))
+                .thenThrow(new EmpruntService.LivreIntrouvableException(99L))
+                .thenThrow(new EmpruntService.StockIndisponibleException(8L));
+
+        mockMvc.perform(post("/api/v1/emprunts") // Demande un emprunt d'un livre absent.
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "livreId": 99,
+                                  "emprunteur": "Alice Durand",
+                                  "emailEmprunteur": "alice.durand@email.com"
+                                }
+                                """))
+                .andExpect(status().isBadRequest()); // L'identifiant de livre absent est une requête invalide.
+
+        mockMvc.perform(post("/api/v1/emprunts") // Demande un livre dont le stock est épuisé.
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "livreId": 8,
+                                  "emprunteur": "Alice Durand",
+                                  "emailEmprunteur": "alice.durand@email.com"
+                                }
+                                """))
+                .andExpect(status().isConflict()); // L'absence de stock est un conflit métier.
+    }
+
     /** Un retour réussi ne peut pas être répété et un identifiant inconnu répond 404. */
     @Test // Vérifie le premier retour, le conflit au second et le 404 si l'emprunt manque.
     void returnsLoanOnlyOnceAndReportsUnknownLoan() throws Exception {

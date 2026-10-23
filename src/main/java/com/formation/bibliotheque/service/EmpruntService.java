@@ -1,7 +1,9 @@
 package com.formation.bibliotheque.service;
 
 import com.formation.bibliotheque.model.Emprunt;
+import com.formation.bibliotheque.model.Livre;
 import com.formation.bibliotheque.repository.EmpruntRepository;
+import com.formation.bibliotheque.repository.LivreRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,9 +26,13 @@ public class EmpruntService {
     /** Repository responsable de la persistance des emprunts. */
     private final EmpruntRepository empruntRepository;
 
+    /** Repository du catalogue, utilisé pour vérifier et ajuster le stock des livres. */
+    private final LivreRepository livreRepository;
+
     /** Injecte le repository utilisé par les opérations métier. */
-    public EmpruntService(EmpruntRepository empruntRepository) {
+    public EmpruntService(EmpruntRepository empruntRepository, LivreRepository livreRepository) {
         this.empruntRepository = empruntRepository; // Conserve le repository injecté par Spring.
+        this.livreRepository = livreRepository; // Conserve le repository des livres injecté par Spring.
     }
 
     /** Renvoie les emprunts de la page demandée. */
@@ -45,6 +51,12 @@ public class EmpruntService {
      * Initialise les dates et l'état (RM5), puis sauvegarde l'emprunt.
      */
     public Emprunt creer(Emprunt emprunt) {
+        Livre livre = livreRepository.findById(emprunt.getLivreId())
+                .orElseThrow(() -> new LivreIntrouvableException(emprunt.getLivreId())); // Vérifie que le livre existe.
+        if (livre.getStock() == null || livre.getStock() <= 0) { // Empêche d'emprunter un livre indisponible.
+            throw new StockIndisponibleException(emprunt.getLivreId()); // Signale l'absence d'exemplaire disponible.
+        }
+
         LocalDate aujourdHui = LocalDate.now(); // Utilise la date du jour comme date de départ.
         emprunt.setId(null); // Empêche le client d'imposer un identifiant existant.
         emprunt.setDateEmprunt(aujourdHui); // Initialise la date de début.
@@ -52,6 +64,8 @@ public class EmpruntService {
         emprunt.setDateRetourEffective(null); // Aucun retour n'a encore été enregistré.
         emprunt.setRendu(false); // Un nouvel emprunt est forcément en cours.
 
+        livre.setStock(livre.getStock() - 1); // Réserve un exemplaire pour ce nouvel emprunt.
+        livreRepository.save(livre); // Persiste le stock diminué dans la même transaction.
         return empruntRepository.save(emprunt); // Persiste l'emprunt initialisé.
     }
 
@@ -59,9 +73,13 @@ public class EmpruntService {
      * Enregistre le retour de l'emprunt (RM6).
      */
     public Emprunt retourner(Emprunt emprunt) {
+        Livre livre = livreRepository.findById(emprunt.getLivreId())
+                .orElseThrow(() -> new LivreIntrouvableException(emprunt.getLivreId())); // Vérifie que le livre existe encore.
         emprunt.setRendu(true); // Marque le livre comme rendu.
         emprunt.setDateRetourEffective(LocalDate.now()); // Enregistre la date réelle du retour.
 
+        livre.setStock(livre.getStock() + 1); // Rend un exemplaire disponible à nouveau.
+        livreRepository.save(livre); // Persiste le stock augmenté dans la même transaction.
         return empruntRepository.save(emprunt); // Persiste le nouvel état de l'emprunt.
     }
 
@@ -75,5 +93,21 @@ public class EmpruntService {
     @Transactional(readOnly = true)
     public Page<Emprunt> recupererEnRetard(Pageable pageable) {
         return empruntRepository.findByRenduFalseAndDateRetourPrevueBefore(LocalDate.now(), pageable); // Filtre les prêts échus et non rendus.
+    }
+
+    /** Signale qu'une demande référence un livre absent du catalogue. */
+    public static class LivreIntrouvableException extends RuntimeException {
+        /** Construit une erreur qui indique l'identifiant de livre manquant. */
+        public LivreIntrouvableException(Long livreId) {
+            super("Le livre " + livreId + " est introuvable."); // Fournit un message utile au diagnostic.
+        }
+    }
+
+    /** Signale qu'aucun exemplaire n'est disponible pour un nouvel emprunt. */
+    public static class StockIndisponibleException extends RuntimeException {
+        /** Construit une erreur qui indique le livre sans stock disponible. */
+        public StockIndisponibleException(Long livreId) {
+            super("Le livre " + livreId + " n'est pas disponible."); // Fournit un message utile au diagnostic.
+        }
     }
 }

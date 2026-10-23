@@ -5,6 +5,8 @@ import com.formation.bibliotheque.dto.EmpruntResponse;
 import com.formation.bibliotheque.mapper.EmpruntMapper;
 import com.formation.bibliotheque.model.Emprunt;
 import com.formation.bibliotheque.service.EmpruntService;
+import com.formation.bibliotheque.service.EmpruntService.LivreIntrouvableException;
+import com.formation.bibliotheque.service.EmpruntService.StockIndisponibleException;
 import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -74,14 +76,21 @@ public class EmpruntController {
     @Operation(summary = "Créer un emprunt") // Décrit la création dans Swagger.
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Emprunt créé"),
-            @ApiResponse(responseCode = "400", description = "Requête invalide")
+            @ApiResponse(responseCode = "400", description = "Requête invalide ou livre inexistant"),
+            @ApiResponse(responseCode = "409", description = "Livre indisponible")
     })
     @PostMapping // Associe la méthode à POST /api/v1/emprunts.
     public ResponseEntity<EmpruntResponse> creer(@Valid @RequestBody EmpruntRequest request) {
         Emprunt emprunt = EmpruntMapper.versEntite(request); // Convertit les champs reçus en entité.
-        Emprunt empruntCree = empruntService.creer(emprunt); // Applique les règles métier et persiste l'emprunt.
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(EmpruntMapper.versResponse(empruntCree)); // Renvoie le DTO créé avec HTTP 201.
+        try {
+            Emprunt empruntCree = empruntService.creer(emprunt); // Applique les règles métier et persiste l'emprunt.
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(EmpruntMapper.versResponse(empruntCree)); // Renvoie le DTO créé avec HTTP 201.
+        } catch (LivreIntrouvableException exception) {
+            return ResponseEntity.badRequest().build(); // Renvoie HTTP 400 si le livre demandé n'existe pas.
+        } catch (StockIndisponibleException exception) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build(); // Renvoie HTTP 409 si le stock est épuisé.
+        }
     }
 
     /**
@@ -92,7 +101,7 @@ public class EmpruntController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Emprunt marqué comme rendu"),
             @ApiResponse(responseCode = "404", description = "Emprunt inexistant"),
-            @ApiResponse(responseCode = "409", description = "Emprunt déjà rendu")
+            @ApiResponse(responseCode = "409", description = "Emprunt déjà rendu ou livre absent du catalogue")
     })
     @PatchMapping("/{id}/retour") // Associe la méthode à PATCH /api/v1/emprunts/{id}/retour.
     public ResponseEntity<EmpruntResponse> retourner(@PathVariable Long id) {
@@ -106,8 +115,12 @@ public class EmpruntController {
             return ResponseEntity.status(HttpStatus.CONFLICT).build(); // Répond 409 si le livre est déjà rendu.
         }
 
-        Emprunt empruntRetourne = empruntService.retourner(emprunt); // Enregistre l'état rendu et sa date.
-        return ResponseEntity.ok(EmpruntMapper.versResponse(empruntRetourne)); // Retourne le résultat avec HTTP 200.
+        try {
+            Emprunt empruntRetourne = empruntService.retourner(emprunt); // Enregistre le retour et restaure le stock.
+            return ResponseEntity.ok(EmpruntMapper.versResponse(empruntRetourne)); // Retourne le résultat avec HTTP 200.
+        } catch (LivreIntrouvableException exception) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build(); // Signale qu'un livre supprimé ne peut être remis en stock.
+        }
     }
 
     /** Endpoint 19 : renvoie la page des emprunts dont le livre n'est pas encore rendu. */
