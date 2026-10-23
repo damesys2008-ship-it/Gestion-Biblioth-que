@@ -1,0 +1,58 @@
+package com.formation.bibliotheque.model;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "livres")
+public class Livre {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
+    private String titre;
+
+    @Column(nullable = false, unique = true)
+    private String isbn;
+
+    @Column(nullable = false)
+    private Double prix;
+
+    private Integer anneePublication;
+
+    @Column(nullable = false)
+    private Integer stock;
+
+    @Column(nullable = false)
+    private Long auteurId;
+
+    public Livre() {
+    }
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getTitre() { return titre; }
+    public void setTitre(String titre) { this.titre = titre; }
+
+    public String getIsbn() { return isbn; }
+    public void setIsbn(String isbn) { this.isbn = isbn; }
+
+    public Double getPrix() { return prix; }
+    public void setPrix(Double prix) { this.prix = prix; }
+
+    public Integer getAnneePublication() { return anneePublication; }
+    public void setAnneePublication(Integer anneePublication) { this.anneePublication = anneePublication; }
+
+    public Integer getStock() { return stock; }
+    public void setStock(Integer stock) { this.stock = stock; }
+
+    public Long getAuteurId() { return auteurId; }
+    public void setAuteurId(Long auteurId) { this.auteurId = auteurId; }
+}
