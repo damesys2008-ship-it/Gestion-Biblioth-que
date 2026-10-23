@@ -54,19 +54,9 @@ public class EmpruntController {
         return ResponseEntity.ok(EmpruntMapper.versResponse(resultat.get()));
     }
 
-    /**
-     * Endpoint 17 : valide le livre et sa disponibilité avant de créer l'emprunt.
-     * La validation du corps JSON est effectuée automatiquement par Spring.
-     */
+    /** Endpoint 17 : valide la requête puis crée un emprunt. */
     @PostMapping
     public ResponseEntity<EmpruntResponse> creer(@Valid @RequestBody EmpruntRequest request) {
-        if (!empruntService.livreExiste(request.getLivreId())) {
-            return ResponseEntity.badRequest().build();
-        }
-        if (!empruntService.livreDisponible(request.getLivreId())) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
-
         Emprunt emprunt = EmpruntMapper.versEntite(request);
         Emprunt empruntCree = empruntService.creer(emprunt);
         return ResponseEntity.status(HttpStatus.CREATED)

@@ -19,8 +19,6 @@ class BibliothequeApiApplicationTests {
 
 	@Test
 	void loadsInitialData() {
-		assertThat(jdbcTemplate.queryForObject("SELECT COUNT(*) FROM auteurs", Integer.class)).isEqualTo(5);
-		assertThat(jdbcTemplate.queryForObject("SELECT COUNT(*) FROM livres", Integer.class)).isEqualTo(8);
 		assertThat(jdbcTemplate.queryForObject("SELECT COUNT(*) FROM emprunts", Integer.class)).isEqualTo(3);
 	}
 

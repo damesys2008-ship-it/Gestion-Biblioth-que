@@ -8,8 +8,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.http.MediaType;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
@@ -64,9 +64,7 @@ class EmpruntControllerTests {
     }
 
     @Test
-    void createsLoanOnlyWhenTheBookExistsAndIsAvailable() throws Exception {
-        when(empruntService.livreExiste(2L)).thenReturn(true);
-        when(empruntService.livreDisponible(2L)).thenReturn(true);
+    void createsLoanAndValidatesTheRequest() throws Exception {
         when(empruntService.creer(any(Emprunt.class))).thenAnswer(invocation -> {
             Emprunt emprunt = invocation.getArgument(0);
             emprunt.setId(4L);
@@ -75,9 +73,6 @@ class EmpruntControllerTests {
             emprunt.setRendu(false);
             return emprunt;
         });
-        when(empruntService.livreExiste(99L)).thenReturn(false);
-        when(empruntService.livreExiste(8L)).thenReturn(true);
-        when(empruntService.livreDisponible(8L)).thenReturn(false);
 
         mockMvc.perform(post("/api/v1/emprunts")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -98,9 +93,9 @@ class EmpruntControllerTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
-                                  "livreId": 99,
+                                  "livreId": 2,
                                   "emprunteur": "Alice Durand",
-                                  "emailEmprunteur": "alice.durand@email.com"
+                                  "emailEmprunteur": "invalid-email"
                                 }
                                 """))
                 .andExpect(status().isBadRequest());
@@ -109,20 +104,8 @@ class EmpruntControllerTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
-                                  "livreId": 8,
                                   "emprunteur": "Alice Durand",
                                   "emailEmprunteur": "alice.durand@email.com"
-                                }
-                                """))
-                .andExpect(status().isConflict());
-
-        mockMvc.perform(post("/api/v1/emprunts")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {
-                                  "livreId": 2,
-                                  "emprunteur": "Alice Durand",
-                                  "emailEmprunteur": "invalid-email"
                                 }
                                 """))
                 .andExpect(status().isBadRequest());

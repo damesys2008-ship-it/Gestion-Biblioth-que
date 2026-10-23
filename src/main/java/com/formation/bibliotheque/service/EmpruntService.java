@@ -1,9 +1,7 @@
 package com.formation.bibliotheque.service;
 
 import com.formation.bibliotheque.model.Emprunt;
-import com.formation.bibliotheque.model.Livre;
 import com.formation.bibliotheque.repository.EmpruntRepository;
-import com.formation.bibliotheque.repository.LivreRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,11 +22,9 @@ public class EmpruntService {
     public static final int DUREE_MAX_JOURS = 14;
 
     private final EmpruntRepository empruntRepository;
-    private final LivreRepository livreRepository;
 
-    public EmpruntService(EmpruntRepository empruntRepository, LivreRepository livreRepository) {
+    public EmpruntService(EmpruntRepository empruntRepository) {
         this.empruntRepository = empruntRepository;
-        this.livreRepository = livreRepository;
     }
 
     /** Renvoie les emprunts de la page demandée. */
@@ -43,23 +39,8 @@ public class EmpruntService {
         return empruntRepository.findById(id);
     }
 
-    /** Vérifie qu'un livre existe avec cet identifiant. */
-    @Transactional(readOnly = true)
-    public boolean livreExiste(Long livreId) {
-        return livreRepository.existsById(livreId);
-    }
-
-    /** Vérifie qu'un livre existe et possède un stock strictement positif (RM4). */
-    @Transactional(readOnly = true)
-    public boolean livreDisponible(Long livreId) {
-        return livreRepository.findById(livreId)
-                .map(livre -> livre.getStock() != null && livre.getStock() > 0)
-                .orElse(false);
-    }
-
     /**
-     * Initialise les dates et l'état (RM5), décrémente le stock disponible,
-     * puis sauvegarde le livre et l'emprunt dans la même transaction.
+     * Initialise les dates et l'état (RM5), puis sauvegarde l'emprunt.
      */
     public Emprunt creer(Emprunt emprunt) {
         LocalDate aujourdHui = LocalDate.now();
@@ -69,29 +50,15 @@ public class EmpruntService {
         emprunt.setDateRetourEffective(null);
         emprunt.setRendu(false);
 
-        Optional<Livre> livreOptionnel = livreRepository.findById(emprunt.getLivreId());
-        if (livreOptionnel.isPresent()) {
-            Livre livre = livreOptionnel.get();
-            livre.setStock(livre.getStock() - 1);
-            livreRepository.save(livre);
-        }
-
         return empruntRepository.save(emprunt);
     }
 
     /**
-     * Enregistre le retour (RM6) et réapprovisionne le livre s'il existe encore.
+     * Enregistre le retour de l'emprunt (RM6).
      */
     public Emprunt retourner(Emprunt emprunt) {
         emprunt.setRendu(true);
         emprunt.setDateRetourEffective(LocalDate.now());
-
-        Optional<Livre> livreOptionnel = livreRepository.findById(emprunt.getLivreId());
-        if (livreOptionnel.isPresent()) {
-            Livre livre = livreOptionnel.get();
-            livre.setStock(livre.getStock() + 1);
-            livreRepository.save(livre);
-        }
 
         return empruntRepository.save(emprunt);
     }
