@@ -2,8 +2,11 @@ package com.formation.bibliotheque.controller;
 
 import com.formation.bibliotheque.dto.AuteurRequest;
 import com.formation.bibliotheque.dto.AuteurResponse;
+import com.formation.bibliotheque.dto.LivreResponse;
 import com.formation.bibliotheque.mapper.AuteurMapper;
+import com.formation.bibliotheque.mapper.LivreMapper;
 import com.formation.bibliotheque.model.Auteur;
+import com.formation.bibliotheque.model.Livre;
 import com.formation.bibliotheque.service.AuteurService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -107,5 +110,21 @@ public class AuteurController {
         }
         auteurService.supprimer(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Lister les livres d'un auteur")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Page des livres de l'auteur"),
+            @ApiResponse(responseCode = "404", description = "Auteur inexistant")
+    })
+    @GetMapping("/{id}/livres")
+    public ResponseEntity<PagedModel<LivreResponse>> listerLivres(
+            @PathVariable Long id,
+            @PageableDefault(size = 10, sort = "titre") Pageable pageable) {
+        if (!auteurService.existe(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        Page<Livre> page = auteurService.recupererLivres(id, pageable);
+        return ResponseEntity.ok(LivreMapper.versPage(page));
     }
 }
