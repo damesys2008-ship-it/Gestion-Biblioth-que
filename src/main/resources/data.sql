@@ -5,6 +5,7 @@ INSERT INTO auteurs (nom, prenom, nationalite) VALUES
 ('Camus', 'Albert', 'Française'),
 ('Tolkien', 'J.R.R.', 'Britannique'),
 ('Asimov', 'Isaac', 'Américaine');
+
 -- Livres (id 1 à 8). Le Hobbit (id 8) a un stock de 0 : il n'est pas disponible.
 INSERT INTO livres (titre, isbn, prix, annee_publication, stock, auteur_id) VALUES
 ('Les Misérables', '978-2-07-040850-4', 12.50, 1862, 5, 1),
@@ -15,6 +16,7 @@ INSERT INTO livres (titre, isbn, prix, annee_publication, stock, auteur_id) VALU
 ('La Peste', '978-2-07-036042-2', 7.80, 1947, 6, 3),
 ('Le Seigneur des Anneaux', '978-2-267-02700-4', 25.00, 1954, 3, 4),
 ('Le Hobbit', '978-2-267-02600-7', 15.00, 1937, 0, 4);
+
 -- Emprunts (id 1 à 3). L'emprunt 1 est rendu ; les emprunts 2 et 3 sont en retard.
 INSERT INTO emprunts (livre_id, emprunteur, email_emprunteur, date_emprunt, date_retour_prevue,
 date_retour_effective, rendu) VALUES
