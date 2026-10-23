@@ -1,0 +1,1997 @@
+{
+  "info": {
+    "_postman_id": "cb570866-ec06-4ea9-86e6-5fc9d3165ecb",
+    "name": "Bibliotheque-API",
+    "description": "Q32 full collection: execute the 46 requests in order after restarting the API to reset the H2 database.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auteurs",
+      "item": [
+        {
+          "name": "R01 — GET /auteurs → 200",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auteurs",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auteurs"
+              ]
+            }
+          },
+          "description": "5 authors; Asimov first",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R01 expected status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Five authors; Asimov first', function () {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body.content).to.have.lengthOf(5);",
+                  "    pm.expect(body.content[0].nom).to.eql('Asimov');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R02 — GET /auteurs/1 → 200",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auteurs/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auteurs",
+                "1"
+              ]
+            }
+          },
+          "description": "Victor Hugo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R02 expected status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Victor Hugo returned', function () {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body.nom).to.eql('Hugo');",
+                  "    pm.expect(body.prenom).to.eql('Victor');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R03 — GET /auteurs/99 → 404",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auteurs/99",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auteurs",
+                "99"
+              ]
+            }
+          },
+          "description": "Author not found",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R03 expected status 404', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R04 — POST /auteurs → 201",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auteurs",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auteurs"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Vernes\",\n  \"prenom\": \"Jules\",\n  \"nationalite\": \"Française\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "description": "Create author with id 6",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R04 expected status 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "pm.test('Author id is 6', function () {",
+                  "    pm.expect(pm.response.json().id).to.eql(6);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R05 — POST /auteurs → 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auteurs",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auteurs"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"\",\n  \"prenom\": \"Jules\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "description": "Validation rejects empty name",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R05 expected status 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R06 — PUT /auteurs/6 → 200",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auteurs/6",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auteurs",
+                "6"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Verne\",\n  \"prenom\": \"Jules\",\n  \"nationalite\": \"Française\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "description": "Correct author name",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R06 expected status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Author name corrected', function () {",
+                  "    pm.expect(pm.response.json().nom).to.eql('Verne');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R07 — PUT /auteurs/99 → 404",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auteurs/99",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auteurs",
+                "99"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Verne\",\n  \"prenom\": \"Jules\",\n  \"nationalite\": \"Française\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "description": "Author not found",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R07 expected status 404', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R08 — DELETE /auteurs/1 → 409",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auteurs/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auteurs",
+                "1"
+              ]
+            }
+          },
+          "description": "Author still has books",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R08 expected status 409', function () {",
+                  "    pm.response.to.have.status(409);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R09 — DELETE /auteurs/5 → 204",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auteurs/5",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auteurs",
+                "5"
+              ]
+            }
+          },
+          "description": "Delete author without books",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R09 expected status 204', function () {",
+                  "    pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R10 — DELETE /auteurs/5 → 404",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auteurs/5",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auteurs",
+                "5"
+              ]
+            }
+          },
+          "description": "Already deleted",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R10 expected status 404', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R11 — GET /auteurs/1/livres → 200",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auteurs/1/livres",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auteurs",
+                "1",
+                "livres"
+              ]
+            }
+          },
+          "description": "Two books by Victor Hugo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R11 expected status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Two books returned', function () {",
+                  "    pm.expect(pm.response.json().content).to.have.lengthOf(2);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R12 — GET /auteurs/99/livres → 404",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auteurs/99/livres",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auteurs",
+                "99",
+                "livres"
+              ]
+            }
+          },
+          "description": "Author not found",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R12 expected status 404', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Livres",
+      "item": [
+        {
+          "name": "R13 — GET /livres?page=0&size=3&sort=prix,desc → 200",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/livres?page=0&size=3&sort=prix,desc",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "livres"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "3"
+                },
+                {
+                  "key": "sort",
+                  "value": "prix,desc"
+                }
+              ]
+            }
+          },
+          "description": "Three most expensive books",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R13 expected status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Three books; most expensive first', function () {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body.content).to.have.lengthOf(3);",
+                  "    pm.expect(body.content[0].titre).to.eql('Le Seigneur des Anneaux');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R14 — GET /livres/1 → 200",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/livres/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "livres",
+                "1"
+              ]
+            }
+          },
+          "description": "Les Miserables",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R14 expected status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Book 1 is Les Miserables', function () {",
+                  "    pm.expect(pm.response.json().titre).to.eql('Les Mis?rables');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R15 — GET /livres/99 → 404",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/livres/99",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "livres",
+                "99"
+              ]
+            }
+          },
+          "description": "Book not found",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R15 expected status 404', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R16 — GET /livres/abc → 400",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/livres/abc",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "livres",
+                "abc"
+              ]
+            }
+          },
+          "description": "Non-numeric identifier",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R16 expected status 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R17 — POST /livres → 201",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/livres",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "livres"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titre\": \"Vingt Mille Lieues sous les mers\",\n  \"isbn\": \"978-2-253-00631-2\",\n  \"prix\": 7.9,\n  \"anneePublication\": 1870,\n  \"stock\": 2,\n  \"auteurId\": 6\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "description": "Create book id 9",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R17 expected status 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "pm.test('Created book id is 9', function () {",
+                  "    pm.expect(pm.response.json().id).to.eql(9);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R18 — POST /livres → 409",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/livres",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "livres"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titre\": \"Vingt Mille Lieues sous les mers\",\n  \"isbn\": \"978-2-253-00631-2\",\n  \"prix\": 7.9,\n  \"anneePublication\": 1870,\n  \"stock\": 2,\n  \"auteurId\": 6\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "description": "Duplicate ISBN",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R18 expected status 409', function () {",
+                  "    pm.response.to.have.status(409);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R19 — POST /livres → 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/livres",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "livres"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titre\": \"Livre fantôme\",\n  \"isbn\": \"978-2-0000-0000-1\",\n  \"prix\": 10.0,\n  \"anneePublication\": 2020,\n  \"stock\": 1,\n  \"auteurId\": 99\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "description": "Author does not exist",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R19 expected status 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R20 — POST /livres → 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/livres",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "livres"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titre\": \"\",\n  \"isbn\": \"978-2-0000-0000-2\",\n  \"prix\": -3,\n  \"stock\": 1,\n  \"auteurId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "description": "Invalid book request",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R20 expected status 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R21 — PUT /livres/9 → 200",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/livres/9",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "livres",
+                "9"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titre\": \"Vingt Mille Lieues sous les mers\",\n  \"isbn\": \"978-2-253-00631-2\",\n  \"prix\": 8.5,\n  \"anneePublication\": 1870,\n  \"stock\": 2,\n  \"auteurId\": 6\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "description": "Update book price",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R21 expected status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Book price updated', function () {",
+                  "    pm.expect(pm.response.json().prix).to.eql(8.5);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R22 — PUT /livres/9 → 409",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/livres/9",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "livres",
+                "9"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titre\": \"Vingt Mille Lieues sous les mers\",\n  \"isbn\": \"978-2-07-040850-4\",\n  \"prix\": 8.5,\n  \"anneePublication\": 1870,\n  \"stock\": 2,\n  \"auteurId\": 6\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "description": "ISBN used by another book",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R22 expected status 409', function () {",
+                  "    pm.response.to.have.status(409);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R23 — PUT /livres/99 → 404",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/livres/99",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "livres",
+                "99"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titre\": \"Livre inconnu\",\n  \"isbn\": \"978-2-0000-0000-3\",\n  \"prix\": 10.0,\n  \"anneePublication\": 2020,\n  \"stock\": 1,\n  \"auteurId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "description": "Book not found",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R23 expected status 404', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R24 — GET /livres/recherche?titre=harry → 200",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/livres/recherche?titre=harry",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "livres",
+                "recherche"
+              ],
+              "query": [
+                {
+                  "key": "titre",
+                  "value": "harry"
+                }
+              ]
+            }
+          },
+          "description": "Find Harry Potter books",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R24 expected status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Two Harry Potter books found', function () {",
+                  "    pm.expect(pm.response.json().content).to.have.lengthOf(2);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R25 — GET /livres/recherche → 400",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/livres/recherche",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "livres",
+                "recherche"
+              ]
+            }
+          },
+          "description": "Missing title parameter",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R25 expected status 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R26 — GET /livres/disponibles → 200",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/livres/disponibles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "livres",
+                "disponibles"
+              ]
+            }
+          },
+          "description": "Eight books available",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R26 expected status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Unavailable books are excluded', function () {",
+                  "    const titles = pm.response.json().content.map(book => book.titre);",
+                  "    pm.expect(titles).not.to.include('Le Hobbit');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R27 — PATCH /livres/8/stock?quantite=0 → 400",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/livres/8/stock?quantite=0",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "livres",
+                "8",
+                "stock"
+              ],
+              "query": [
+                {
+                  "key": "quantite",
+                  "value": "0"
+                }
+              ]
+            }
+          },
+          "description": "Reject zero stock quantity",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R27 expected status 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R28 — PATCH /livres/99/stock?quantite=2 → 404",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/livres/99/stock?quantite=2",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "livres",
+                "99",
+                "stock"
+              ],
+              "query": [
+                {
+                  "key": "quantite",
+                  "value": "2"
+                }
+              ]
+            }
+          },
+          "description": "Book not found",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R28 expected status 404', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Emprunts et fin du scénario",
+      "item": [
+        {
+          "name": "R29 — POST /emprunts → 409",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/emprunts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "emprunts"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"livreId\": 8,\n  \"emprunteur\": \"Alice Durand\",\n  \"emailEmprunteur\": \"alice.durand@email.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "description": "Book unavailable",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R29 expected status 409', function () {",
+                  "    pm.response.to.have.status(409);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R30 — POST /emprunts → 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/emprunts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "emprunts"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"livreId\": 99,\n  \"emprunteur\": \"Alice Durand\",\n  \"emailEmprunteur\": \"alice.durand@email.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "description": "Book does not exist",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R30 expected status 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R31 — POST /emprunts → 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/emprunts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "emprunts"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"livreId\": 2,\n  \"emprunteur\": \"Alice Durand\",\n  \"emailEmprunteur\": \"alice.durand\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "description": "Invalid email rejected",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R31 expected status 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R32 — POST /emprunts → 201",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/emprunts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "emprunts"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"livreId\": 2,\n  \"emprunteur\": \"Alice Durand\",\n  \"emailEmprunteur\": \"alice.durand@email.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "description": "Create loan id 4",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R32 expected status 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "pm.test('Loan 4 created without exposing email', function () {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body.id).to.eql(4);",
+                  "    pm.expect(body.rendu).to.eql(false);",
+                  "    pm.expect(body.enRetard).to.eql(false);",
+                  "    pm.expect(body).not.to.have.property('emailEmprunteur');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R33 — GET /livres/2 → 200",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/livres/2",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "livres",
+                "2"
+              ]
+            }
+          },
+          "description": "Book stock decremented",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R33 expected status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Book stock decremented to 2', function () {",
+                  "    pm.expect(pm.response.json().stock).to.eql(2);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R34 — GET /emprunts/4 → 200",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/emprunts/4",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "emprunts",
+                "4"
+              ]
+            }
+          },
+          "description": "Loan response hides email",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R34 expected status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Loan response does not expose email', function () {",
+                  "    pm.expect(pm.response.json()).not.to.have.property('emailEmprunteur');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R35 — GET /emprunts/99 → 404",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/emprunts/99",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "emprunts",
+                "99"
+              ]
+            }
+          },
+          "description": "Loan not found",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R35 expected status 404', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R36 — GET /emprunts/en-cours → 200",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/emprunts/en-cours",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "emprunts",
+                "en-cours"
+              ]
+            }
+          },
+          "description": "Three active loans",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R36 expected status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Three active loans', function () {",
+                  "    pm.expect(pm.response.json().content).to.have.lengthOf(3);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R37 — GET /emprunts/en-retard → 200",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/emprunts/en-retard",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "emprunts",
+                "en-retard"
+              ]
+            }
+          },
+          "description": "Two overdue loans",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R37 expected status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Two overdue loans', function () {",
+                  "    pm.expect(pm.response.json().content).to.have.lengthOf(2);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R38 — PATCH /emprunts/2/retour → 200",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/emprunts/2/retour",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "emprunts",
+                "2",
+                "retour"
+              ]
+            }
+          },
+          "description": "Return loan 2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R38 expected status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Loan returned with return date', function () {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body.rendu).to.eql(true);",
+                  "    pm.expect(body.dateRetourEffective).to.be.a('string');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R39 — PATCH /emprunts/2/retour → 409",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/emprunts/2/retour",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "emprunts",
+                "2",
+                "retour"
+              ]
+            }
+          },
+          "description": "Loan already returned",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R39 expected status 409', function () {",
+                  "    pm.response.to.have.status(409);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R40 — PATCH /emprunts/99/retour → 404",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/emprunts/99/retour",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "emprunts",
+                "99",
+                "retour"
+              ]
+            }
+          },
+          "description": "Loan not found",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R40 expected status 404', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R41 — PATCH /livres/8/stock?quantite=2 → 200",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/livres/8/stock?quantite=2",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "livres",
+                "8",
+                "stock"
+              ],
+              "query": [
+                {
+                  "key": "quantite",
+                  "value": "2"
+                }
+              ]
+            }
+          },
+          "description": "Restock The Hobbit",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R41 expected status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('The Hobbit stock is 2', function () {",
+                  "    pm.expect(pm.response.json().stock).to.eql(2);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R42 — POST /emprunts → 201",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/emprunts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "emprunts"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"livreId\": 8,\n  \"emprunteur\": \"Paul Morel\",\n  \"emailEmprunteur\": \"paul.morel@email.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "description": "Borrow restocked book",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R42 expected status 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R43 — GET /emprunts → 200",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/emprunts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "emprunts"
+              ]
+            }
+          },
+          "description": "Five loans total",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R43 expected status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Five loans total', function () {",
+                  "    pm.expect(pm.response.json().page.totalElements).to.eql(5);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R44 — DELETE /livres/9 → 204",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/livres/9",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "livres",
+                "9"
+              ]
+            }
+          },
+          "description": "Delete created book",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R44 expected status 204', function () {",
+                  "    pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R45 — DELETE /livres/9 → 404",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/livres/9",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "livres",
+                "9"
+              ]
+            }
+          },
+          "description": "Book already deleted",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R45 expected status 404', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "R46 — GET /inexistant → 404",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/inexistant",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "inexistant"
+              ]
+            }
+          },
+          "description": "Unknown URL",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('R46 expected status 404', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/api/v1",
+      "type": "string"
+    }
+  ]
+}
