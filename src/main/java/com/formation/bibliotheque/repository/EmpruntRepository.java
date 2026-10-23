@@ -13,7 +13,7 @@ import java.time.LocalDate;
  * Spring Data JPA fournit automatiquement les opérations CRUD héritées
  * et crée les requêtes correspondant aux noms des méthodes ci-dessous.
  */
-@Repository
+@Repository // Enregistre l'interface comme composant d'accès aux données Spring.
 public interface EmpruntRepository extends JpaRepository<Emprunt, Long> {
 
     /**
@@ -22,7 +22,7 @@ public interface EmpruntRepository extends JpaRepository<Emprunt, Long> {
      * @param pageable paramètres de pagination et de tri
      * @return une page d'emprunts non rendus
      */
-    Page<Emprunt> findByRenduFalse(Pageable pageable);
+    Page<Emprunt> findByRenduFalse(Pageable pageable); // Spring Data construit la requête filtrant les emprunts non rendus.
 
     /**
      * Recherche les emprunts non rendus dont la date de retour prévue
@@ -32,5 +32,5 @@ public interface EmpruntRepository extends JpaRepository<Emprunt, Long> {
      * @param pageable paramètres de pagination et de tri
      * @return une page d'emprunts en retard à cette date
      */
-    Page<Emprunt> findByRenduFalseAndDateRetourPrevueBefore(LocalDate date, Pageable pageable);
+    Page<Emprunt> findByRenduFalseAndDateRetourPrevueBefore(LocalDate date, Pageable pageable); // Filtre les emprunts non rendus échus avant la date.
 }

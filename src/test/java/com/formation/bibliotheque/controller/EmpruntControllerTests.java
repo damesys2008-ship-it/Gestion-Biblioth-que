@@ -26,61 +26,61 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 /** Vérifie les réponses HTTP des endpoints d'emprunt sans démarrer tout Spring Boot. */
-@ExtendWith(MockitoExtension.class)
+@ExtendWith(MockitoExtension.class) // Active l'initialisation des mocks Mockito pour JUnit.
 class EmpruntControllerTests {
 
     /** Faux service permettant de contrôler les résultats vus par le contrôleur. */
-    @Mock
+    @Mock // Remplace le service réel pendant les tests du contrôleur.
     private EmpruntService empruntService;
 
     /** Client MVC de test configuré pour résoudre les paramètres de pagination. */
-    private MockMvc mockMvc;
+    private MockMvc mockMvc; // Simule des requêtes HTTP sans lancer de serveur.
 
     /** Prépare le contrôleur isolé et son résolveur de Pageable. */
     @BeforeEach
     void setUp() {
-        mockMvc = standaloneSetup(new EmpruntController(empruntService))
-                .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
-                .build();
+        mockMvc = standaloneSetup(new EmpruntController(empruntService)) // Construit le contrôleur avec son faux service.
+                .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver()) // Active la résolution des paramètres de page.
+                .build(); // Finalise le client MVC de test.
     }
 
     /** Les listes répondent 200 et la lecture d'un identifiant inconnu répond 404. */
-    @Test
+    @Test // Vérifie les routes de liste et la gestion d'un identifiant inconnu.
     void listsLoansAndReturnsNotFoundForUnknownId() throws Exception {
-        when(empruntService.recupererTous(any())).thenReturn(new PageImpl<>(List.of()));
-        when(empruntService.recupererEnCours(any())).thenReturn(new PageImpl<>(List.of()));
-        when(empruntService.recupererEnRetard(any())).thenReturn(new PageImpl<>(List.of()));
-        when(empruntService.recupererParId(99L)).thenReturn(Optional.empty());
+        when(empruntService.recupererTous(any())).thenReturn(new PageImpl<>(List.of())); // Prépare une page vide pour la liste complète.
+        when(empruntService.recupererEnCours(any())).thenReturn(new PageImpl<>(List.of())); // Prépare une page vide des prêts en cours.
+        when(empruntService.recupererEnRetard(any())).thenReturn(new PageImpl<>(List.of())); // Prépare une page vide des prêts en retard.
+        when(empruntService.recupererParId(99L)).thenReturn(Optional.empty()); // Simule l'absence de l'emprunt 99.
 
-        mockMvc.perform(get("/api/v1/emprunts"))
+        mockMvc.perform(get("/api/v1/emprunts")) // Appelle la route de liste.
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content.length()").value(0));
 
-        mockMvc.perform(get("/api/v1/emprunts/99"))
+        mockMvc.perform(get("/api/v1/emprunts/99")) // Appelle la route d'un emprunt inexistant.
                 .andExpect(status().isNotFound());
 
-        mockMvc.perform(get("/api/v1/emprunts/en-cours"))
+        mockMvc.perform(get("/api/v1/emprunts/en-cours")) // Appelle la route des prêts en cours.
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content.length()").value(0));
 
-        mockMvc.perform(get("/api/v1/emprunts/en-retard"))
+        mockMvc.perform(get("/api/v1/emprunts/en-retard")) // Appelle la route des prêts en retard.
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content.length()").value(0));
     }
 
     /** Une requête valide est créée ; les champs requis et le format email sont validés. */
-    @Test
+    @Test // Vérifie la création valide et les erreurs de validation du DTO.
     void createsLoanAndValidatesTheRequest() throws Exception {
-        when(empruntService.creer(any(Emprunt.class))).thenAnswer(invocation -> {
-            Emprunt emprunt = invocation.getArgument(0);
-            emprunt.setId(4L);
-            emprunt.setDateEmprunt(LocalDate.now());
-            emprunt.setDateRetourPrevue(LocalDate.now().plusDays(14));
-            emprunt.setRendu(false);
-            return emprunt;
+        when(empruntService.creer(any(Emprunt.class))).thenAnswer(invocation -> { // Simule la création et l'initialisation en base.
+            Emprunt emprunt = invocation.getArgument(0); // Récupère l'entité fournie au service.
+            emprunt.setId(4L); // Simule l'identifiant généré.
+            emprunt.setDateEmprunt(LocalDate.now()); // Simule la date de début.
+            emprunt.setDateRetourPrevue(LocalDate.now().plusDays(14)); // Simule l'échéance.
+            emprunt.setRendu(false); // Simule l'état initial du livre.
+            return emprunt; // Renvoie l'entité créée au contrôleur.
         });
 
-        mockMvc.perform(post("/api/v1/emprunts")
+        mockMvc.perform(post("/api/v1/emprunts") // Envoie une demande JSON valide.
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -89,13 +89,13 @@ class EmpruntControllerTests {
                                   "emailEmprunteur": "alice.durand@email.com"
                                 }
                                 """))
-                .andExpect(status().isCreated())
+                .andExpect(status().isCreated()) // Vérifie le code HTTP de création.
                 .andExpect(jsonPath("$.id").value(4))
                 .andExpect(jsonPath("$.rendu").value(false))
                 .andExpect(jsonPath("$.enRetard").value(false))
                 .andExpect(jsonPath("$.emailEmprunteur").doesNotExist());
 
-        mockMvc.perform(post("/api/v1/emprunts")
+        mockMvc.perform(post("/api/v1/emprunts") // Envoie une adresse email invalide.
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -106,7 +106,7 @@ class EmpruntControllerTests {
                                 """))
                 .andExpect(status().isBadRequest());
 
-        mockMvc.perform(post("/api/v1/emprunts")
+        mockMvc.perform(post("/api/v1/emprunts") // Envoie une demande sans identifiant de livre.
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -118,30 +118,30 @@ class EmpruntControllerTests {
     }
 
     /** Un retour réussi ne peut pas être répété et un identifiant inconnu répond 404. */
-    @Test
+    @Test // Vérifie le premier retour, le conflit au second et le 404 si l'emprunt manque.
     void returnsLoanOnlyOnceAndReportsUnknownLoan() throws Exception {
-        Emprunt emprunt = new Emprunt();
-        emprunt.setId(2L);
-        emprunt.setLivreId(3L);
-        emprunt.setEmprunteur("Jean Martin");
-        emprunt.setDateRetourPrevue(LocalDate.now().minusDays(1));
-        emprunt.setRendu(false);
-        when(empruntService.recupererParId(2L)).thenReturn(Optional.of(emprunt));
-        when(empruntService.retourner(emprunt)).thenAnswer(invocation -> {
-            emprunt.setRendu(true);
-            emprunt.setDateRetourEffective(LocalDate.now());
-            return emprunt;
+        Emprunt emprunt = new Emprunt(); // Prépare un emprunt encore en cours.
+        emprunt.setId(2L); // Définit son identifiant.
+        emprunt.setLivreId(3L); // Définit le livre associé.
+        emprunt.setEmprunteur("Jean Martin"); // Définit le lecteur.
+        emprunt.setDateRetourPrevue(LocalDate.now().minusDays(1)); // Place la date prévue dans le passé.
+        emprunt.setRendu(false); // Indique que le retour n'a pas encore eu lieu.
+        when(empruntService.recupererParId(2L)).thenReturn(Optional.of(emprunt)); // Rend cet emprunt disponible au contrôleur.
+        when(empruntService.retourner(emprunt)).thenAnswer(invocation -> { // Simule l'enregistrement du retour.
+            emprunt.setRendu(true); // Modifie l'état du livre.
+            emprunt.setDateRetourEffective(LocalDate.now()); // Enregistre la date du retour.
+            return emprunt; // Renvoie l'emprunt après mise à jour.
         });
-        when(empruntService.recupererParId(99L)).thenReturn(Optional.empty());
+        when(empruntService.recupererParId(99L)).thenReturn(Optional.empty()); // Simule un identifiant absent.
 
-        mockMvc.perform(patch("/api/v1/emprunts/2/retour"))
+        mockMvc.perform(patch("/api/v1/emprunts/2/retour")) // Enregistre le premier retour.
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.rendu").value(true));
 
-        mockMvc.perform(patch("/api/v1/emprunts/2/retour"))
+        mockMvc.perform(patch("/api/v1/emprunts/2/retour")) // Tente de retourner une seconde fois.
                 .andExpect(status().isConflict());
 
-        mockMvc.perform(patch("/api/v1/emprunts/99/retour"))
+        mockMvc.perform(patch("/api/v1/emprunts/99/retour")) // Tente le retour d'un emprunt inexistant.
                 .andExpect(status().isNotFound());
     }
 }

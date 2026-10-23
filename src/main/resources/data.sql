@@ -2,5 +2,7 @@
 INSERT INTO emprunts (livre_id, emprunteur, email_emprunteur, date_emprunt, date_retour_prevue,
 date_retour_effective, rendu) VALUES
 (1, 'Marie Dupont', 'marie.dupont@email.com', '2026-09-01', '2026-09-15', '2026-09-10', TRUE),
+-- Insère un emprunt non rendu dont l'échéance est dépassée.
 (3, 'Jean Martin', 'jean.martin@email.com', '2026-09-05', '2026-09-19', NULL, FALSE),
+-- Insère un second emprunt non rendu dont l'échéance est dépassée.
 (5, 'Sophie Bernard', 'sophie.bernard@email.com', '2026-09-20', '2026-10-04', NULL, FALSE);

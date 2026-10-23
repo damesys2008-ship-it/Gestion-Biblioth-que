@@ -1,7 +1,7 @@
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
+import java.net.URI; // Construit les URI complètes appelées par le client HTTP.
+import java.net.http.HttpClient; // Fournit le client HTTP réutilisable.
+import java.net.http.HttpRequest; // Représente les requêtes HTTP envoyées à l'API.
+import java.net.http.HttpResponse; // Représente les réponses HTTP reçues.
 
 /**
  * Petit client Java autonome utilisé pour exécuter le scénario de démonstration Q33.
@@ -10,16 +10,16 @@ import java.net.http.HttpResponse;
 public class ClientBibliotheque {
 
     /** Adresse de base de l'API locale ; les méthodes ajoutent le chemin demandé. */
-    private static final String BASE_URL = "http://localhost:8080/api/v1";
+    private static final String BASE_URL = "http://localhost:8080/api/v1"; // Préfixe commun des routes de l'API locale.
 
     /** Client HTTP réutilisé pour envoyer toutes les requêtes du scénario. */
-    private static final HttpClient client = HttpClient.newHttpClient();
+    private static final HttpClient client = HttpClient.newHttpClient(); // Réutilise le même client pour chaque étape.
 
     /** Nombre total de requêtes exécutées dans le scénario. */
-    private static int nombreEtapes = 0;
+    private static int nombreEtapes = 0; // Compte le nombre de requêtes exécutées.
 
     /** Nombre de réponses dont le statut correspond au statut attendu. */
-    private static int nombreConformes = 0;
+    private static int nombreConformes = 0; // Compte les statuts égaux aux résultats attendus.
 
     /**
      * Envoie une requête GET et demande une réponse JSON.
@@ -28,13 +28,13 @@ public class ClientBibliotheque {
      * @return réponse HTTP reçue
      * @throws Exception si la requête ne peut pas être envoyée
      */
-    private static HttpResponse<String> get(String chemin) throws Exception {
-        HttpRequest requete = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + chemin))
-                .header("Accept", "application/json")
-                .GET()
-                .build();
-        return client.send(requete, HttpResponse.BodyHandlers.ofString());
+    private static HttpResponse<String> get(String chemin) throws Exception { // Envoie une requête de lecture GET.
+        HttpRequest requete = HttpRequest.newBuilder() // Commence la construction de la requête HTTP.
+                .uri(URI.create(BASE_URL + chemin)) // Définit l'adresse de la ressource demandée.
+                .header("Accept", "application/json") // Demande une réponse au format JSON.
+                .GET() // Définit la méthode HTTP GET.
+                .build(); // Construit la requête prête à être envoyée.
+        return client.send(requete, HttpResponse.BodyHandlers.ofString()); // Envoie la requête et lit le corps texte.
     }
 
     /**
@@ -45,14 +45,14 @@ public class ClientBibliotheque {
      * @return réponse HTTP reçue
      * @throws Exception si la requête ne peut pas être envoyée
      */
-    private static HttpResponse<String> post(String chemin, String corpsJson) throws Exception {
-        HttpRequest requete = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + chemin))
-                .header("Accept", "application/json")
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(corpsJson))
-                .build();
-        return client.send(requete, HttpResponse.BodyHandlers.ofString());
+    private static HttpResponse<String> post(String chemin, String corpsJson) throws Exception { // Envoie une requête de création POST.
+        HttpRequest requete = HttpRequest.newBuilder() // Commence la construction de la requête HTTP.
+                .uri(URI.create(BASE_URL + chemin)) // Définit l'adresse de la ressource à créer.
+                .header("Accept", "application/json") // Demande une réponse au format JSON.
+                .header("Content-Type", "application/json") // Indique que le corps envoyé est du JSON.
+                .POST(HttpRequest.BodyPublishers.ofString(corpsJson)) // Ajoute le JSON au corps de la requête.
+                .build(); // Construit la requête prête à être envoyée.
+        return client.send(requete, HttpResponse.BodyHandlers.ofString()); // Envoie la requête et lit le corps texte.
     }
 
     /**
@@ -62,13 +62,13 @@ public class ClientBibliotheque {
      * @return réponse HTTP reçue
      * @throws Exception si la requête ne peut pas être envoyée
      */
-    private static HttpResponse<String> patch(String chemin) throws Exception {
-        HttpRequest requete = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + chemin))
-                .header("Accept", "application/json")
-                .method("PATCH", HttpRequest.BodyPublishers.noBody())
-                .build();
-        return client.send(requete, HttpResponse.BodyHandlers.ofString());
+    private static HttpResponse<String> patch(String chemin) throws Exception { // Envoie une mise à jour partielle PATCH.
+        HttpRequest requete = HttpRequest.newBuilder() // Commence la construction de la requête HTTP.
+                .uri(URI.create(BASE_URL + chemin)) // Définit l'adresse de la ressource à mettre à jour.
+                .header("Accept", "application/json") // Demande une réponse au format JSON.
+                .method("PATCH", HttpRequest.BodyPublishers.noBody()) // Définit PATCH sans corps de requête.
+                .build(); // Construit la requête prête à être envoyée.
+        return client.send(requete, HttpResponse.BodyHandlers.ofString()); // Envoie la requête et lit le corps texte.
     }
 
     /**
@@ -78,13 +78,13 @@ public class ClientBibliotheque {
      * @return réponse HTTP reçue
      * @throws Exception si la requête ne peut pas être envoyée
      */
-    private static HttpResponse<String> delete(String chemin) throws Exception {
-        HttpRequest requete = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + chemin))
-                .header("Accept", "application/json")
-                .DELETE()
-                .build();
-        return client.send(requete, HttpResponse.BodyHandlers.ofString());
+    private static HttpResponse<String> delete(String chemin) throws Exception { // Envoie une requête de suppression DELETE.
+        HttpRequest requete = HttpRequest.newBuilder() // Commence la construction de la requête HTTP.
+                .uri(URI.create(BASE_URL + chemin)) // Définit l'adresse de la ressource à supprimer.
+                .header("Accept", "application/json") // Demande une réponse au format JSON.
+                .DELETE() // Définit la méthode HTTP DELETE.
+                .build(); // Construit la requête prête à être envoyée.
+        return client.send(requete, HttpResponse.BodyHandlers.ofString()); // Envoie la requête et lit le corps texte.
     }
 
     /**
@@ -102,21 +102,21 @@ public class ClientBibliotheque {
             String chemin,
             HttpResponse<String> reponse,
             int codeAttendu) {
-        nombreEtapes++;
+        nombreEtapes++; // Avance le compteur avant d'afficher le résultat de l'étape.
 
         // Une étape est conforme uniquement si le statut reçu correspond au statut prévu.
-        boolean conforme = reponse.statusCode() == codeAttendu;
-        if (conforme) {
-            nombreConformes++;
+        boolean conforme = reponse.statusCode() == codeAttendu; // Compare le statut reçu au statut attendu.
+        if (conforme) { // Ne compte comme conforme qu'une réponse au statut prévu.
+            nombreConformes++; // Ajoute cette étape au bilan des réponses conformes.
         }
 
         // Les quatre lignes et la ligne vide qui suit respectent le format de Q33.
-        System.out.println("=== Étape " + nombreEtapes + " : " + description + " ===");
+        System.out.println("=== Étape " + nombreEtapes + " : " + description + " ==="); // Affiche le titre de l'étape.
         System.out.println(methode + " " + chemin + " → " + reponse.statusCode()
                 + " (attendu : " + codeAttendu + ") "
                 + (conforme ? "CONFORME" : "NON CONFORME"));
-        System.out.println("Réponse : " + reponse.body());
-        System.out.println();
+        System.out.println("Réponse : " + reponse.body()); // Affiche le corps renvoyé par le serveur.
+        System.out.println(); // Sépare visuellement deux étapes.
     }
 
     /**
@@ -229,6 +229,6 @@ public class ClientBibliotheque {
                 204);
 
         // Bilan : compare le nombre de réponses conformes au nombre d'étapes exécutées.
-        System.out.println("Bilan : " + nombreConformes + "/" + nombreEtapes + " étapes conformes");
+        System.out.println("Bilan : " + nombreConformes + "/" + nombreEtapes + " étapes conformes"); // Affiche le résultat global du scénario.
     }
 }

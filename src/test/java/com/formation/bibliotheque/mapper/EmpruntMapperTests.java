@@ -13,41 +13,41 @@ import static org.assertj.core.api.Assertions.assertThat;
 class EmpruntMapperTests {
 
     /** Les dates et l'état de retour doivent rester à null dans le mapper de requête. */
-    @Test
+    @Test // Marque cette méthode comme un test unitaire JUnit.
     void mapsRequestWithoutServiceManagedFields() {
-        EmpruntRequest request = new EmpruntRequest();
-        request.setLivreId(12L);
-        request.setEmprunteur("Marie Dupont");
-        request.setEmailEmprunteur("marie@example.com");
+        EmpruntRequest request = new EmpruntRequest(); // Prépare une demande comme celle reçue par l'API.
+        request.setLivreId(12L); // Définit le livre demandé.
+        request.setEmprunteur("Marie Dupont"); // Définit le nom du lecteur.
+        request.setEmailEmprunteur("marie@example.com"); // Définit son email.
 
-        Emprunt emprunt = EmpruntMapper.versEntite(request);
+        Emprunt emprunt = EmpruntMapper.versEntite(request); // Convertit la demande en entité.
 
-        assertThat(emprunt.getId()).isNull();
-        assertThat(emprunt.getLivreId()).isEqualTo(12L);
-        assertThat(emprunt.getEmprunteur()).isEqualTo("Marie Dupont");
-        assertThat(emprunt.getEmailEmprunteur()).isEqualTo("marie@example.com");
-        assertThat(emprunt.getDateEmprunt()).isNull();
-        assertThat(emprunt.getDateRetourPrevue()).isNull();
-        assertThat(emprunt.getDateRetourEffective()).isNull();
-        assertThat(emprunt.getRendu()).isNull();
+        assertThat(emprunt.getId()).isNull(); // Vérifie que l'identifiant sera généré par la base.
+        assertThat(emprunt.getLivreId()).isEqualTo(12L); // Vérifie la copie du livre.
+        assertThat(emprunt.getEmprunteur()).isEqualTo("Marie Dupont"); // Vérifie la copie du nom.
+        assertThat(emprunt.getEmailEmprunteur()).isEqualTo("marie@example.com"); // Vérifie la copie de l'email.
+        assertThat(emprunt.getDateEmprunt()).isNull(); // Vérifie que le service définira la date de début.
+        assertThat(emprunt.getDateRetourPrevue()).isNull(); // Vérifie que le service calculera l'échéance.
+        assertThat(emprunt.getDateRetourEffective()).isNull(); // Vérifie qu'aucun retour n'est anticipé.
+        assertThat(emprunt.getRendu()).isNull(); // Vérifie que le service définit l'état initial.
     }
 
     /** Seul un emprunt non rendu dont la date limite est passée est en retard. */
-    @Test
+    @Test // Marque le calcul de retard comme test unitaire.
     void marksOnlyUnreturnedPastDueLoansAsLate() {
-        Emprunt overdueEmprunt = new Emprunt();
-        overdueEmprunt.setRendu(false);
-        overdueEmprunt.setDateRetourPrevue(LocalDate.now().minusDays(1));
+        Emprunt overdueEmprunt = new Emprunt(); // Crée un emprunt de test.
+        overdueEmprunt.setRendu(false); // Le livre n'a pas été rendu.
+        overdueEmprunt.setDateRetourPrevue(LocalDate.now().minusDays(1)); // L'échéance est passée.
 
-        EmpruntResponse overdueResponse = EmpruntMapper.versResponse(overdueEmprunt);
+        EmpruntResponse overdueResponse = EmpruntMapper.versResponse(overdueEmprunt); // Convertit et calcule le retard.
 
-        assertThat(overdueResponse.getEnRetard()).isTrue();
+        assertThat(overdueResponse.getEnRetard()).isTrue(); // Vérifie que l'emprunt est en retard.
 
-        overdueEmprunt.setRendu(true);
-        assertThat(EmpruntMapper.versResponse(overdueEmprunt).getEnRetard()).isFalse();
+        overdueEmprunt.setRendu(true); // Simule le retour du livre.
+        assertThat(EmpruntMapper.versResponse(overdueEmprunt).getEnRetard()).isFalse(); // Un livre rendu n'est pas en retard.
 
-        overdueEmprunt.setRendu(false);
-        overdueEmprunt.setDateRetourPrevue(LocalDate.now());
-        assertThat(EmpruntMapper.versResponse(overdueEmprunt).getEnRetard()).isFalse();
+        overdueEmprunt.setRendu(false); // Simule à nouveau un emprunt en cours.
+        overdueEmprunt.setDateRetourPrevue(LocalDate.now()); // Place l'échéance à aujourd'hui.
+        assertThat(EmpruntMapper.versResponse(overdueEmprunt).getEnRetard()).isFalse(); // Une échéance aujourd'hui n'est pas encore dépassée.
     }
 }

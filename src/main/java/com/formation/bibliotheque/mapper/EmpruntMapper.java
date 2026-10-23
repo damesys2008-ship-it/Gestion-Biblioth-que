@@ -26,11 +26,11 @@ public final class EmpruntMapper {
      * Les dates, l'identifiant et l'état de retour seront définis par le service.
      */
     public static Emprunt versEntite(EmpruntRequest request) {
-        Emprunt emprunt = new Emprunt();
-        emprunt.setLivreId(request.getLivreId());
-        emprunt.setEmprunteur(request.getEmprunteur());
-        emprunt.setEmailEmprunteur(request.getEmailEmprunteur());
-        return emprunt;
+        Emprunt emprunt = new Emprunt(); // Crée l'entité à partir des données de la requête.
+        emprunt.setLivreId(request.getLivreId()); // Copie l'identifiant du livre demandé.
+        emprunt.setEmprunteur(request.getEmprunteur()); // Copie le nom de l'emprunteur.
+        emprunt.setEmailEmprunteur(request.getEmailEmprunteur()); // Conserve l'email pour la base.
+        return emprunt; // Laisse le service initialiser les dates et l'état.
     }
 
     /**
@@ -38,11 +38,11 @@ public final class EmpruntMapper {
      * L'email n'est pas exposé et le retard est calculé à la date du jour.
      */
     public static EmpruntResponse versResponse(Emprunt emprunt) {
-        boolean enRetard = Boolean.FALSE.equals(emprunt.getRendu())
+        boolean enRetard = Boolean.FALSE.equals(emprunt.getRendu()) // Un emprunt rendu n'est jamais en retard.
                 && emprunt.getDateRetourPrevue() != null
                 && emprunt.getDateRetourPrevue().isBefore(LocalDate.now());
 
-        return new EmpruntResponse(
+        return new EmpruntResponse( // Construit une réponse sans divulguer l'email.
                 emprunt.getId(),
                 emprunt.getLivreId(),
                 emprunt.getEmprunteur(),
@@ -57,10 +57,10 @@ public final class EmpruntMapper {
      * Convertit chaque emprunt d'une liste en DTO de réponse.
      */
     public static List<EmpruntResponse> versResponses(List<Emprunt> emprunts) {
-        List<EmpruntResponse> responses = new ArrayList<>();
+        List<EmpruntResponse> responses = new ArrayList<>(); // Prépare la liste de réponses à remplir.
         // Convertit les éléments un par un en réutilisant la conversion unitaire.
         for (Emprunt emprunt : emprunts) {
-            responses.add(versResponse(emprunt));
+            responses.add(versResponse(emprunt)); // Convertit et ajoute l'emprunt courant.
         }
         return responses;
     }
@@ -69,10 +69,10 @@ public final class EmpruntMapper {
      * Convertit le contenu d'une page en DTOs tout en conservant sa pagination.
      */
     public static PagedModel<EmpruntResponse> versPage(Page<Emprunt> page) {
-        List<EmpruntResponse> contenu = versResponses(page.getContent());
+        List<EmpruntResponse> contenu = versResponses(page.getContent()); // Convertit le contenu de la page.
         // Recrée la page avec les mêmes informations de pagination que la page source.
-        Page<EmpruntResponse> pageDto =
+        Page<EmpruntResponse> pageDto = // Conserve les paramètres de page et le nombre total de résultats.
                 new PageImpl<>(contenu, page.getPageable(), page.getTotalElements());
-        return new PagedModel<>(pageDto);
+        return new PagedModel<>(pageDto); // Expose la page convertie au format Spring.
     }
 }
