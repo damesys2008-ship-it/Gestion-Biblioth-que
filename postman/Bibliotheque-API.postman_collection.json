@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "cb570866-ec06-4ea9-86e6-5fc9d3165ecb",
     "name": "Bibliotheque-API",
-    "description": "Q32 full collection: execute the 46 requests in order after restarting the API to reset the H2 database.",
+    "description": "Q32 : exécuter les 46 requêtes dans l’ordre après le redémarrage de l’API afin de réinitialiser la base H2. Chaque requête comprend un commentaire explicatif en français.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -10,7 +10,7 @@
       "name": "Auteurs",
       "item": [
         {
-          "name": "R01 — GET /auteurs → 200",
+          "name": "R01 -- GET /auteurs  200",
           "request": {
             "method": "GET",
             "header": [
@@ -29,7 +29,7 @@
               ]
             }
           },
-          "description": "5 authors; Asimov first",
+          "description": "Commentaire : affiche la liste paginée des auteurs ; Asimov doit apparaître en premier.",
           "event": [
             {
               "listen": "test",
@@ -50,7 +50,7 @@
           ]
         },
         {
-          "name": "R02 — GET /auteurs/1 → 200",
+          "name": "R02 -- GET /auteurs/1  200",
           "request": {
             "method": "GET",
             "header": [
@@ -70,7 +70,7 @@
               ]
             }
           },
-          "description": "Victor Hugo",
+          "description": "Commentaire : vérifie la consultation de l’auteur Victor Hugo par son identifiant.",
           "event": [
             {
               "listen": "test",
@@ -91,7 +91,7 @@
           ]
         },
         {
-          "name": "R03 — GET /auteurs/99 → 404",
+          "name": "R03 -- GET /auteurs/99  404",
           "request": {
             "method": "GET",
             "header": [
@@ -111,7 +111,7 @@
               ]
             }
           },
-          "description": "Author not found",
+          "description": "Commentaire : vérifie qu’un identifiant d’auteur inconnu renvoie une réponse 404.",
           "event": [
             {
               "listen": "test",
@@ -127,7 +127,7 @@
           ]
         },
         {
-          "name": "R04 — POST /auteurs → 201",
+          "name": "R04 -- POST /auteurs  201",
           "request": {
             "method": "POST",
             "header": [
@@ -159,7 +159,7 @@
               }
             }
           },
-          "description": "Create author with id 6",
+          "description": "Commentaire : crée un auteur valide ; le nouvel auteur reçoit l’identifiant 6.",
           "event": [
             {
               "listen": "test",
@@ -178,7 +178,7 @@
           ]
         },
         {
-          "name": "R05 — POST /auteurs → 400",
+          "name": "R05 -- POST /auteurs  400",
           "request": {
             "method": "POST",
             "header": [
@@ -210,7 +210,7 @@
               }
             }
           },
-          "description": "Validation rejects empty name",
+          "description": "Commentaire : vérifie que la validation refuse un auteur dont le nom est vide.",
           "event": [
             {
               "listen": "test",
@@ -226,7 +226,7 @@
           ]
         },
         {
-          "name": "R06 — PUT /auteurs/6 → 200",
+          "name": "R06 -- PUT /auteurs/6  200",
           "request": {
             "method": "PUT",
             "header": [
@@ -259,7 +259,7 @@
               }
             }
           },
-          "description": "Correct author name",
+          "description": "Commentaire : modifie le nom de l’auteur créé à l’étape précédente.",
           "event": [
             {
               "listen": "test",
@@ -278,7 +278,7 @@
           ]
         },
         {
-          "name": "R07 — PUT /auteurs/99 → 404",
+          "name": "R07 -- PUT /auteurs/99  404",
           "request": {
             "method": "PUT",
             "header": [
@@ -311,7 +311,7 @@
               }
             }
           },
-          "description": "Author not found",
+          "description": "Commentaire : vérifie la réponse 404 lors de la modification d’un auteur inexistant.",
           "event": [
             {
               "listen": "test",
@@ -327,7 +327,7 @@
           ]
         },
         {
-          "name": "R08 — DELETE /auteurs/1 → 409",
+          "name": "R08 -- DELETE /auteurs/1  409",
           "request": {
             "method": "DELETE",
             "header": [
@@ -347,7 +347,7 @@
               ]
             }
           },
-          "description": "Author still has books",
+          "description": "Commentaire : la suppression est refusée car l’auteur possède encore des livres.",
           "event": [
             {
               "listen": "test",
@@ -363,7 +363,7 @@
           ]
         },
         {
-          "name": "R09 — DELETE /auteurs/5 → 204",
+          "name": "R09 -- DELETE /auteurs/5  204",
           "request": {
             "method": "DELETE",
             "header": [
@@ -383,7 +383,7 @@
               ]
             }
           },
-          "description": "Delete author without books",
+          "description": "Commentaire : supprime l’auteur 5, qui ne possède aucun livre.",
           "event": [
             {
               "listen": "test",
@@ -399,7 +399,7 @@
           ]
         },
         {
-          "name": "R10 — DELETE /auteurs/5 → 404",
+          "name": "R10 -- DELETE /auteurs/5  404",
           "request": {
             "method": "DELETE",
             "header": [
@@ -419,7 +419,7 @@
               ]
             }
           },
-          "description": "Already deleted",
+          "description": "Commentaire : vérifie qu’une seconde suppression de l’auteur 5 renvoie 404.",
           "event": [
             {
               "listen": "test",
@@ -435,7 +435,7 @@
           ]
         },
         {
-          "name": "R11 — GET /auteurs/1/livres → 200",
+          "name": "R11 -- GET /auteurs/1/livres  200",
           "request": {
             "method": "GET",
             "header": [
@@ -456,7 +456,7 @@
               ]
             }
           },
-          "description": "Two books by Victor Hugo",
+          "description": "Commentaire : affiche les deux livres associés à Victor Hugo.",
           "event": [
             {
               "listen": "test",
@@ -475,7 +475,7 @@
           ]
         },
         {
-          "name": "R12 — GET /auteurs/99/livres → 404",
+          "name": "R12 -- GET /auteurs/99/livres  404",
           "request": {
             "method": "GET",
             "header": [
@@ -496,7 +496,7 @@
               ]
             }
           },
-          "description": "Author not found",
+          "description": "Commentaire : vérifie qu’aucun livre ne peut être listé pour un auteur inexistant.",
           "event": [
             {
               "listen": "test",
@@ -517,7 +517,7 @@
       "name": "Livres",
       "item": [
         {
-          "name": "R13 — GET /livres?page=0&size=3&sort=prix,desc → 200",
+          "name": "R13 -- GET /livres?page=0&size=3&sort=prix,desc  200",
           "request": {
             "method": "GET",
             "header": [
@@ -550,7 +550,7 @@
               ]
             }
           },
-          "description": "Three most expensive books",
+          "description": "Commentaire : affiche les trois livres les plus chers, triés par prix décroissant.",
           "event": [
             {
               "listen": "test",
@@ -571,7 +571,7 @@
           ]
         },
         {
-          "name": "R14 — GET /livres/1 → 200",
+          "name": "R14 -- GET /livres/1  200",
           "request": {
             "method": "GET",
             "header": [
@@ -591,7 +591,7 @@
               ]
             }
           },
-          "description": "Les Miserables",
+          "description": "Commentaire : consulte les détails du livre Les Misérables.",
           "event": [
             {
               "listen": "test",
@@ -610,7 +610,7 @@
           ]
         },
         {
-          "name": "R15 — GET /livres/99 → 404",
+          "name": "R15 -- GET /livres/99  404",
           "request": {
             "method": "GET",
             "header": [
@@ -630,7 +630,7 @@
               ]
             }
           },
-          "description": "Book not found",
+          "description": "Commentaire : vérifie la réponse 404 pour un identifiant de livre inconnu.",
           "event": [
             {
               "listen": "test",
@@ -646,7 +646,7 @@
           ]
         },
         {
-          "name": "R16 — GET /livres/abc → 400",
+          "name": "R16 -- GET /livres/abc  400",
           "request": {
             "method": "GET",
             "header": [
@@ -666,7 +666,7 @@
               ]
             }
           },
-          "description": "Non-numeric identifier",
+          "description": "Commentaire : vérifie qu’un identifiant non numérique est rejeté avec une réponse 400.",
           "event": [
             {
               "listen": "test",
@@ -682,7 +682,7 @@
           ]
         },
         {
-          "name": "R17 — POST /livres → 201",
+          "name": "R17 -- POST /livres  201",
           "request": {
             "method": "POST",
             "header": [
@@ -714,7 +714,7 @@
               }
             }
           },
-          "description": "Create book id 9",
+          "description": "Commentaire : crée un livre valide ; il reçoit l’identifiant 9.",
           "event": [
             {
               "listen": "test",
@@ -733,7 +733,7 @@
           ]
         },
         {
-          "name": "R18 — POST /livres → 409",
+          "name": "R18 -- POST /livres  409",
           "request": {
             "method": "POST",
             "header": [
@@ -765,7 +765,7 @@
               }
             }
           },
-          "description": "Duplicate ISBN",
+          "description": "Commentaire : vérifie que l’ISBN déjà utilisé provoque un conflit 409.",
           "event": [
             {
               "listen": "test",
@@ -781,7 +781,7 @@
           ]
         },
         {
-          "name": "R19 — POST /livres → 400",
+          "name": "R19 -- POST /livres  400",
           "request": {
             "method": "POST",
             "header": [
@@ -813,7 +813,7 @@
               }
             }
           },
-          "description": "Author does not exist",
+          "description": "Commentaire : vérifie qu’un livre lié à un auteur inexistant est refusé.",
           "event": [
             {
               "listen": "test",
@@ -829,7 +829,7 @@
           ]
         },
         {
-          "name": "R20 — POST /livres → 400",
+          "name": "R20 -- POST /livres  400",
           "request": {
             "method": "POST",
             "header": [
@@ -861,7 +861,7 @@
               }
             }
           },
-          "description": "Invalid book request",
+          "description": "Commentaire : vérifie le rejet d’une requête de livre invalide.",
           "event": [
             {
               "listen": "test",
@@ -877,7 +877,7 @@
           ]
         },
         {
-          "name": "R21 — PUT /livres/9 → 200",
+          "name": "R21 -- PUT /livres/9  200",
           "request": {
             "method": "PUT",
             "header": [
@@ -910,7 +910,7 @@
               }
             }
           },
-          "description": "Update book price",
+          "description": "Commentaire : met à jour le prix du livre créé à l’identifiant 9.",
           "event": [
             {
               "listen": "test",
@@ -929,7 +929,7 @@
           ]
         },
         {
-          "name": "R22 — PUT /livres/9 → 409",
+          "name": "R22 -- PUT /livres/9  409",
           "request": {
             "method": "PUT",
             "header": [
@@ -962,7 +962,7 @@
               }
             }
           },
-          "description": "ISBN used by another book",
+          "description": "Commentaire : vérifie qu’un ISBN déjà attribué à un autre livre provoque un conflit.",
           "event": [
             {
               "listen": "test",
@@ -978,7 +978,7 @@
           ]
         },
         {
-          "name": "R23 — PUT /livres/99 → 404",
+          "name": "R23 -- PUT /livres/99  404",
           "request": {
             "method": "PUT",
             "header": [
@@ -1011,7 +1011,7 @@
               }
             }
           },
-          "description": "Book not found",
+          "description": "Commentaire : vérifie la réponse 404 lors de la modification d’un livre inexistant.",
           "event": [
             {
               "listen": "test",
@@ -1027,7 +1027,7 @@
           ]
         },
         {
-          "name": "R24 — GET /livres/recherche?titre=harry → 200",
+          "name": "R24 -- GET /livres/recherche?titre=harry  200",
           "request": {
             "method": "GET",
             "header": [
@@ -1053,7 +1053,7 @@
               ]
             }
           },
-          "description": "Find Harry Potter books",
+          "description": "Commentaire : recherche les livres dont le titre contient « Harry Potter ».",
           "event": [
             {
               "listen": "test",
@@ -1072,7 +1072,7 @@
           ]
         },
         {
-          "name": "R25 — GET /livres/recherche → 400",
+          "name": "R25 -- GET /livres/recherche  400",
           "request": {
             "method": "GET",
             "header": [
@@ -1092,7 +1092,7 @@
               ]
             }
           },
-          "description": "Missing title parameter",
+          "description": "Commentaire : vérifie qu’une recherche sans paramètre de titre est refusée.",
           "event": [
             {
               "listen": "test",
@@ -1108,7 +1108,7 @@
           ]
         },
         {
-          "name": "R26 — GET /livres/disponibles → 200",
+          "name": "R26 -- GET /livres/disponibles  200",
           "request": {
             "method": "GET",
             "header": [
@@ -1128,7 +1128,7 @@
               ]
             }
           },
-          "description": "Eight books available",
+          "description": "Commentaire : liste les huit livres actuellement disponibles.",
           "event": [
             {
               "listen": "test",
@@ -1148,7 +1148,7 @@
           ]
         },
         {
-          "name": "R27 — PATCH /livres/8/stock?quantite=0 → 400",
+          "name": "R27 -- PATCH /livres/8/stock?quantite=0  400",
           "request": {
             "method": "PATCH",
             "header": [
@@ -1175,7 +1175,7 @@
               ]
             }
           },
-          "description": "Reject zero stock quantity",
+          "description": "Commentaire : vérifie que la quantité de stock égale à zéro est refusée.",
           "event": [
             {
               "listen": "test",
@@ -1191,7 +1191,7 @@
           ]
         },
         {
-          "name": "R28 — PATCH /livres/99/stock?quantite=2 → 404",
+          "name": "R28 -- PATCH /livres/99/stock?quantite=2  404",
           "request": {
             "method": "PATCH",
             "header": [
@@ -1218,7 +1218,7 @@
               ]
             }
           },
-          "description": "Book not found",
+          "description": "Commentaire : vérifie la réponse 404 lors de la modification du stock d’un livre inexistant.",
           "event": [
             {
               "listen": "test",
@@ -1239,7 +1239,7 @@
       "name": "Emprunts et fin du scénario",
       "item": [
         {
-          "name": "R29 — POST /emprunts → 409",
+          "name": "R29 -- POST /emprunts  409",
           "request": {
             "method": "POST",
             "header": [
@@ -1271,7 +1271,7 @@
               }
             }
           },
-          "description": "Book unavailable",
+          "description": "Commentaire : vérifie qu’un emprunt est refusé lorsque le livre n’a plus de stock.",
           "event": [
             {
               "listen": "test",
@@ -1287,7 +1287,7 @@
           ]
         },
         {
-          "name": "R30 — POST /emprunts → 400",
+          "name": "R30 -- POST /emprunts  400",
           "request": {
             "method": "POST",
             "header": [
@@ -1319,7 +1319,7 @@
               }
             }
           },
-          "description": "Book does not exist",
+          "description": "Commentaire : vérifie qu’un emprunt lié à un livre inexistant est refusé.",
           "event": [
             {
               "listen": "test",
@@ -1335,7 +1335,7 @@
           ]
         },
         {
-          "name": "R31 — POST /emprunts → 400",
+          "name": "R31 -- POST /emprunts  400",
           "request": {
             "method": "POST",
             "header": [
@@ -1367,7 +1367,7 @@
               }
             }
           },
-          "description": "Invalid email rejected",
+          "description": "Commentaire : vérifie que l’adresse email invalide rend la demande d’emprunt invalide.",
           "event": [
             {
               "listen": "test",
@@ -1383,7 +1383,7 @@
           ]
         },
         {
-          "name": "R32 — POST /emprunts → 201",
+          "name": "R32 -- POST /emprunts  201",
           "request": {
             "method": "POST",
             "header": [
@@ -1415,7 +1415,7 @@
               }
             }
           },
-          "description": "Create loan id 4",
+          "description": "Commentaire : crée un emprunt valide pour le livre 2 ; l’emprunt reçoit l’identifiant 4.",
           "event": [
             {
               "listen": "test",
@@ -1438,7 +1438,7 @@
           ]
         },
         {
-          "name": "R33 — GET /livres/2 → 200",
+          "name": "R33 -- GET /livres/2  200",
           "request": {
             "method": "GET",
             "header": [
@@ -1458,7 +1458,7 @@
               ]
             }
           },
-          "description": "Book stock decremented",
+          "description": "Commentaire : consulte le livre 2 et vérifie que son stock a diminué après l’emprunt.",
           "event": [
             {
               "listen": "test",
@@ -1477,7 +1477,7 @@
           ]
         },
         {
-          "name": "R34 — GET /emprunts/4 → 200",
+          "name": "R34 -- GET /emprunts/4  200",
           "request": {
             "method": "GET",
             "header": [
@@ -1497,7 +1497,7 @@
               ]
             }
           },
-          "description": "Loan response hides email",
+          "description": "Commentaire : consulte l’emprunt 4 et vérifie que l’email du lecteur n’est pas exposé.",
           "event": [
             {
               "listen": "test",
@@ -1516,7 +1516,7 @@
           ]
         },
         {
-          "name": "R35 — GET /emprunts/99 → 404",
+          "name": "R35 -- GET /emprunts/99  404",
           "request": {
             "method": "GET",
             "header": [
@@ -1536,7 +1536,7 @@
               ]
             }
           },
-          "description": "Loan not found",
+          "description": "Commentaire : vérifie la réponse 404 pour un identifiant d’emprunt inconnu.",
           "event": [
             {
               "listen": "test",
@@ -1552,7 +1552,7 @@
           ]
         },
         {
-          "name": "R36 — GET /emprunts/en-cours → 200",
+          "name": "R36 -- GET /emprunts/en-cours  200",
           "request": {
             "method": "GET",
             "header": [
@@ -1572,7 +1572,7 @@
               ]
             }
           },
-          "description": "Three active loans",
+          "description": "Commentaire : liste les trois emprunts qui ne sont pas encore rendus.",
           "event": [
             {
               "listen": "test",
@@ -1591,7 +1591,7 @@
           ]
         },
         {
-          "name": "R37 — GET /emprunts/en-retard → 200",
+          "name": "R37 -- GET /emprunts/en-retard  200",
           "request": {
             "method": "GET",
             "header": [
@@ -1611,7 +1611,7 @@
               ]
             }
           },
-          "description": "Two overdue loans",
+          "description": "Commentaire : liste les deux emprunts non rendus dont la date limite est dépassée.",
           "event": [
             {
               "listen": "test",
@@ -1630,7 +1630,7 @@
           ]
         },
         {
-          "name": "R38 — PATCH /emprunts/2/retour → 200",
+          "name": "R38 -- PATCH /emprunts/2/retour  200",
           "request": {
             "method": "PATCH",
             "header": [
@@ -1651,7 +1651,7 @@
               ]
             }
           },
-          "description": "Return loan 2",
+          "description": "Commentaire : enregistre le retour de l’emprunt 2.",
           "event": [
             {
               "listen": "test",
@@ -1672,7 +1672,7 @@
           ]
         },
         {
-          "name": "R39 — PATCH /emprunts/2/retour → 409",
+          "name": "R39 -- PATCH /emprunts/2/retour  409",
           "request": {
             "method": "PATCH",
             "header": [
@@ -1693,7 +1693,7 @@
               ]
             }
           },
-          "description": "Loan already returned",
+          "description": "Commentaire : vérifie qu’un emprunt déjà rendu ne peut pas être retourné une seconde fois.",
           "event": [
             {
               "listen": "test",
@@ -1709,7 +1709,7 @@
           ]
         },
         {
-          "name": "R40 — PATCH /emprunts/99/retour → 404",
+          "name": "R40 -- PATCH /emprunts/99/retour  404",
           "request": {
             "method": "PATCH",
             "header": [
@@ -1730,7 +1730,7 @@
               ]
             }
           },
-          "description": "Loan not found",
+          "description": "Commentaire : vérifie la réponse 404 lors du retour d’un emprunt inexistant.",
           "event": [
             {
               "listen": "test",
@@ -1746,7 +1746,7 @@
           ]
         },
         {
-          "name": "R41 — PATCH /livres/8/stock?quantite=2 → 200",
+          "name": "R41 -- PATCH /livres/8/stock?quantite=2  200",
           "request": {
             "method": "PATCH",
             "header": [
@@ -1773,7 +1773,7 @@
               ]
             }
           },
-          "description": "Restock The Hobbit",
+          "description": "Commentaire : ajoute du stock au livre The Hobbit pour permettre un nouvel emprunt.",
           "event": [
             {
               "listen": "test",
@@ -1792,7 +1792,7 @@
           ]
         },
         {
-          "name": "R42 — POST /emprunts → 201",
+          "name": "R42 -- POST /emprunts  201",
           "request": {
             "method": "POST",
             "header": [
@@ -1824,7 +1824,7 @@
               }
             }
           },
-          "description": "Borrow restocked book",
+          "description": "Commentaire : emprunte le livre réapprovisionné à l’étape précédente.",
           "event": [
             {
               "listen": "test",
@@ -1840,7 +1840,7 @@
           ]
         },
         {
-          "name": "R43 — GET /emprunts → 200",
+          "name": "R43 -- GET /emprunts  200",
           "request": {
             "method": "GET",
             "header": [
@@ -1859,7 +1859,7 @@
               ]
             }
           },
-          "description": "Five loans total",
+          "description": "Commentaire : affiche les cinq emprunts enregistrés après les étapes précédentes.",
           "event": [
             {
               "listen": "test",
@@ -1878,7 +1878,7 @@
           ]
         },
         {
-          "name": "R44 — DELETE /livres/9 → 204",
+          "name": "R44 -- DELETE /livres/9  204",
           "request": {
             "method": "DELETE",
             "header": [
@@ -1898,7 +1898,7 @@
               ]
             }
           },
-          "description": "Delete created book",
+          "description": "Commentaire : supprime le livre créé pendant le scénario.",
           "event": [
             {
               "listen": "test",
@@ -1914,7 +1914,7 @@
           ]
         },
         {
-          "name": "R45 — DELETE /livres/9 → 404",
+          "name": "R45 -- DELETE /livres/9  404",
           "request": {
             "method": "DELETE",
             "header": [
@@ -1934,7 +1934,7 @@
               ]
             }
           },
-          "description": "Book already deleted",
+          "description": "Commentaire : vérifie qu’une seconde suppression du livre renvoie 404.",
           "event": [
             {
               "listen": "test",
@@ -1950,7 +1950,7 @@
           ]
         },
         {
-          "name": "R46 — GET /inexistant → 404",
+          "name": "R46 -- GET /inexistant  404",
           "request": {
             "method": "GET",
             "header": [
@@ -1969,7 +1969,7 @@
               ]
             }
           },
-          "description": "Unknown URL",
+          "description": "Commentaire : vérifie qu’une route inconnue de l’API renvoie 404.",
           "event": [
             {
               "listen": "test",
